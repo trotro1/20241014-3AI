@@ -23,6 +23,7 @@ youtube-transcript-api==0.6.2
 pytube==15.0.0
 
 # chapter 7
+swig==4.2.1
 PyMuPDF==1.23.25
 faiss-cpu==1.7.4
 
