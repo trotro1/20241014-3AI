@@ -1,10 +1,10 @@
 import streamlit as st
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
+from langchain.prompts import ChatPromptTemplate
+from langchain.runnables import RunnablePassthrough
+from langchain.output_parsers import StrOutputParser
 
 # models
-from langchain_openai import ChatOpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -21,7 +21,7 @@ except ImportError:
 def init_page():
     st.set_page_config(
         page_title="Ask My PDF(s)",
-        page_icon="🧐"
+        page_icon="\ud83e\udd2e"
     )
     st.sidebar.title("Options")
 
@@ -37,7 +37,7 @@ def select_model(temperature=0):
     elif model == "GPT-4":
         return ChatOpenAI(
             temperature=temperature,
-            model_name="gpt-4o"
+            model_name="gpt-4"
         )
     elif model == "Claude 3.5 Sonnet":
         return ChatAnthropic(
@@ -65,10 +65,8 @@ def init_qa_chain():
     {question}
     """)
     retriever = st.session_state.vectorstore.as_retriever(
-        # "mmr",  "similarity_score_threshold" などもある
         search_type="similarity",
-        # 文書を何個取得するか (default: 4)
-        search_kwargs={"k":10}
+        search_kwargs={"k": 10}
     )
     chain = (
         {"context": retriever, "question": RunnablePassthrough()}
@@ -84,14 +82,14 @@ def page_ask_my_pdf():
 
     if query := st.text_input("PDFへの質問を書いてね: ", key="input"):
         st.markdown("## Answer")
-        st.write_stream(chain.stream(query))
+        st.write(chain.invoke({"question": query}))
 
 
 def main():
     init_page()
-    st.title("PDF QA 🧐")
+    st.title("PDF QA \ud83e\udd2e")
     if "vectorstore" not in st.session_state:
-        st.warning("まずは 📄 Upload PDF(s) からPDFファイルをアップロードしてね")
+        st.warning("まずは \ud83d\udcc4 Upload PDF(s) からPDFファイルをアップロードしてね")
     else:
         page_ask_my_pdf()
 
